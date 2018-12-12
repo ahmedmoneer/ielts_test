@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>
+            British Council IELTS Online Application
+        </title>
+    </h:head>
+    <h:body>
+        <h:form>
+
+            <p:growl globalOnly="true" />
+
+            <h:panelGrid columns="5">
+
+                <p:outputLabel value="Identifier Document Number"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.docNum}"
+                             required="true"/>                
+                <p:spacer width="40"/>
+
+                <p:outputLabel value="Listening"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.listening}"/>                            
+
+                <p:outputLabel value="Candidate Number"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.candidateNum}"
+                             required="true"/>
+                <p:outputLabel/>
+
+                <p:outputLabel value="Speaking"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.speaking}"/>                             
+
+                <p:outputLabel value="Birth Date"/>
+                <p:calendar pattern="dd MMMM yyyy"
+                            navigator="true"
+                            effect="drop"
+                            effectDuration="fast"
+                            required="true"
+                            yearRange="1900:#{adminPanelController.todayDate}"
+                            value="#{adminPanelController.candidateBirthDate}"/>
+                <p:outputLabel/>
+
+                <p:outputLabel value="Reading"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.reading}"/>                             
+
+                <p:outputLabel value="Test Date"/>
+                <p:calendar pattern="dd MMMM yyyy"
+                            navigator="true"
+                            effect="drop"
+                            effectDuration="fast"
+                            required="true"
+                            value="#{adminPanelController.candidateTestDate}"/>
+                <p:outputLabel/>
+
+                <p:outputLabel value="Writing"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.writing}"/>
+
+                <p:outputLabel value="Candidate Name"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.candiateName}"
+                             required="true"/>
+                <p:outputLabel/>
+
+                <p:outputLabel value="OverAll"/>
+                <p:inputText value="#{adminPanelController.currentCandidate.overall}"/>                             
+
+            </h:panelGrid>
+
+            <p:commandButton style="margin: 10px 10px 10px 10px" value="Save" update="@form" actionListener="#{adminPanelController.save()}"/>
+            <p:commandButton style="margin: 10px 10px 10px 10px" value="Delete" update="@form" actionListener="#{adminPanelController.delete()}" disabled="#{adminPanelController.selectedCandidate == null}"/>
+            <p:commandButton style="margin: 10px 10px 10px 10px" value="Refresh" process="@this" update="@form" actionListener="#{adminPanelController.refresh()}"/>
+
+            <p:dataTable id="dt" widgetVar="dt"                         
+                         value="#{adminPanelController.allCandidates}" var="instance"
+                         rows="5"
+                         paginator="true"
+                         rowsPerPageTemplate="5,10,15,20,25,30"
+                         paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowKey="#{instance.id}"
+                         sortBy="#{instance.id}"
+                         rowIndexVar="index"
+                         selectionMode="single"
+                         selection="#{adminPanelController.selectedCandidate}">
+
+                <p:ajax event="rowSelect" listener="#{adminPanelController.onCandidateSelect()}" update="@form"/>
+
+                <f:facet name="header">
+                    All Candidates
+                </f:facet>
+
+                <p:column style="width: 10px" headerText="#">
+                    <p:outputLabel value="#{index+1}"/>
+                </p:column>
+                <p:column headerText="Identifier Doc #" sortBy="#{instance.docNum}" filterBy="#{instance.docNum}">
+                    <p:outputLabel value="#{instance.docNum}"/>
+                </p:column>
+                <p:column headerText="Candidate Num" sortBy="#{instance.candidateNum}" filterBy="#{instance.candidateNum}">
+                    <p:outputLabel value="#{instance.candidateNum}"/>
+                </p:column>
+                <p:column headerText="Birth Date" sortBy="#{instance.birthDate}" filterBy="#{instance.birthDate}">
+                    <p:outputLabel value="#{instance.birthDate}"/>
+                </p:column>
+                <p:column headerText="Test Date" sortBy="#{instance.testDate}" filterBy="#{instance.testDate}">
+                    <p:outputLabel value="#{instance.testDate}"/>
+                </p:column>
+<!--                <p:column headerText="Candidate Name" sortBy="#{instance.candiateName}" filterBy="#{instance.candiateName}">
+                    <p:outputLabel value="#{instance.candiateName}"/>
+                </p:column>-->
+                <p:column style="width: 8%" headerText="Listening" sortBy="#{instance.listening}" filterBy="#{instance.listening}">
+                    <p:outputLabel value="#{instance.listening}"/>
+                </p:column>
+                <p:column style="width: 8%" headerText="Speaking" sortBy="#{instance.speaking}" filterBy="#{instance.speaking}">
+                    <p:outputLabel value="#{instance.speaking}"/>
+                </p:column>
+                <p:column style="width: 8%" headerText="Reading" sortBy="#{instance.reading}" filterBy="#{instance.reading}">
+                    <p:outputLabel value="#{instance.reading}"/>
+                </p:column>
+                <p:column style="width: 8%" headerText="Writing" sortBy="#{instance.writing}" filterBy="#{instance.writing}">
+                    <p:outputLabel value="#{instance.writing}"/>
+                </p:column>
+                <p:column style="width: 8%" headerText="OverAll" sortBy="#{instance.overall}" filterBy="#{instance.overall}">
+                    <p:outputLabel value="#{instance.overall}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+
+        <br/>
+        <hr/>
+        <h3 style="text-align: center">Adding Dates</h3>
+
+        <h:form id="secondForm">
+
+            <p:messages id="msgs" closable="true"/>
+
+            <p:commandButton style="margin-bottom: 3px;margin-left: 20%;" icon="pi pi-save" title="Add"
+                             actionListener="#{adminPanelController.addRecord()}" update="dt2"
+                             oncomplete="jQuery('.ui-datatable-data tr').last().find('span.ui-icon-pencil').each(function(){jQuery(this).click()});"/>
+
+            <p:dataTable id="dt2" widgetVar="dt2"
+                         style="margin-left: 20%;margin-right: 20%"
+                         value="#{adminPanelController.allDates}" var="var"
+                         rows="5"
+                         paginator="true"
+                         rowsPerPageTemplate="5,10,15,20,25,30"
+                         paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowKey="#{var.id}"
+                         sortBy="#{var.id}"
+                         rowIndexVar="index"
+                         editable="true" 
+                         editingRow="#{adminPanelController.editingRow}">
+
+                <p:ajax event="rowEdit" listener="#{adminPanelController.edit}" update="dt2 secondForm:msgs" oncomplete="rowEditComplete()"/>
+                <p:ajax event="rowEditInit" listener="#{adminPanelController.onRowEditInit(var)}" onstart="rowEditStart()"/>
+                <p:ajax event="rowEditCancel" listener="#{adminPanelController.onRowEditCancel(var)}" update="dt2 secondForm:msgs" oncomplete="rowEditComplete()"/>
+
+                <p:column headerText="Date" style="text-align: center;">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <p:outputLabel value="#{var.idate}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:calendar id="date" style="width: 100%;"
+                                        value="#{var.ieltsDate}"
+                                        pattern="dd MMMM yyyy"
+                                        navigator="true"
+                                        effect="drop"
+                                        effectDuration="fast"
+                                        required="true" requiredMessage="Enter Date !!!" />
+                            <p:focus for="date"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Edit" style="width:15%;text-align:center;">  
+                    <p:rowEditor />
+                </p:column>
+                <p:column headerText="Delete" style="width:15%;text-align:center;">
+                    <p:commandLink action="#{adminPanelController.delete(var)}" update="dt2 secondForm:msgs">
+                        <p:confirm header="Confirmation" message="Are you Sure ?" icon="ui-icon-alert"/>
+                        <p:graphicImage library="resources" name="/images/delete.png"/>
+                    </p:commandLink>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:confirmDialog widgetVar="confirmDelete" global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+
+        </h:form>
+
+        <script>
+            function rowEditStart()
+            {
+                $('.ui-row-editor span.ui-icon-pencil').each(function () {
+                    $(this).css('visibility', 'hidden');
+                });
+            }
+            function rowEditComplete()
+            {
+                $('.ui-row-editor span.ui-icon-pencil').each(function () {
+                    $(this).css('visibility', 'visible');
+                });
+            }
+        </script>
+
+    </h:body>
+</html>
